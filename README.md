@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bhowmikp/sudoku-solver.svg?branch=master)](https://travis-ci.org/bhowmikp/sudoku-solver)
+
 # sudoku-solver
 
 Run app:

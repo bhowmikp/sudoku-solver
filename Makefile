@@ -12,4 +12,5 @@ test:
 clean:
 				$(GOCMD) clean
 run:
+				$(GOCMD)fmt -w .
 				$(GOCMD) run app
