@@ -1,17 +1,15 @@
 # Go parameters
 GOCMD=go
-GOBUILD=$(GOCMD) build
-GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
-GOGET=$(GOCMD) get
-BINARY_NAME=sudoku-solver
 
 all: build
 build:
-				$(GOBUILD) -o $(BINARY_NAME) -v
+				$(GOCMD)fmt -w .
+				$(GOCMD) build
+lint:
+				$(GOCMD)fmt -w .
 test:
-				$(GOTEST) -v ./...
+				$(GOCMD) test
 clean:
-				rm -f $(BINARY_NAME)
+				$(GOCMD) clean
 run:
-				./$(BINARY_NAME)
+				$(GOCMD) run app
