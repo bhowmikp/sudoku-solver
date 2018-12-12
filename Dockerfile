@@ -3,7 +3,7 @@ FROM golang:1.11
 RUN apt-get update \
     && apt-get install nano
 
-EXPOSE 8000
+ENV PORT=8000
 
 WORKDIR /go/src/app
 COPY . .

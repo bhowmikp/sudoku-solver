@@ -1,7 +1,6 @@
 /*
 Package sudoku implements a library to solve soduku puzzles
 */
-
 package main
 
 import (
@@ -57,30 +56,36 @@ func findFirstEmpty(text string) (value string) {
 
 // safeInColumn determines if a certain value is the only one of its
 // kind inside the column
-func safeInColumn(text, value string, column int) (status bool) {
-	return status
+func safeInColumn(text, value string, column int) (status bool, conflicts []int) {
+	return status, conflicts
 }
 
 // safeInRow determines if a certain value is the only one of its
 // kind inside the row
-func safeInRow(text, value string, row int) (status bool) {
-	return status
+func safeInRow(text, value string, row int) (status bool, conflicts []int) {
+	return status, conflicts
 }
 
 // safeInBlock determines if a certain value is the only one of its
 // kind in its 3x3 block
-func safeInBlock(text, value string, row, column int) (status bool) {
-	return status
+func safeInBlock(text, value string, row, column int) (status bool, conflicts []int) {
+	return status, conflicts
 }
 
 // valueSafe determines if the value is safe to be placed in that
 // location of the puzzle
-func valueSafe(text, value string, row, column int) (status bool) {
-	return status
+func valueSafe(text, value string, row, column int) (status bool, conflicts []int) {
+	return status, conflicts
 }
 
+// solves the sudoku puzzle
 func solvePuzzle(text string) string {
 	return text
+}
+
+// check if a board is valid length
+func validBoardLength(text string) bool {
+	return len(text) == sudokuSpots
 }
 
 // userInput takes a text and checks if the text is valid
@@ -94,9 +99,4 @@ func userInput(text string) string {
 	}
 
 	return text
-}
-
-func main() {
-	text := ""
-	text = userInput(text)
 }
