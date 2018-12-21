@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-  "os"
+	"os"
 )
 
 // Ex: http://localhost:8000/?board=test
@@ -14,7 +14,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	status := "fail"
 
 	if validBoardLength(board) {
-
+		status = "success"
+		printTable(w, board)
 	}
 
 	json.NewEncoder(w).Encode(map[string]string{"status": status, "board": board})
@@ -22,10 +23,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
-  port := os.Getenv("PORT")
-  if port == "" {
-    port = "8000"
-  }
-  fmt.Printf("Server listening at port %s...", port)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	fmt.Printf("Server listening at port %s...", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

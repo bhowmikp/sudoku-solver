@@ -3,8 +3,12 @@
 # sudoku-solver
 Run app:
 ```sh
-sudo docker build -t golang-app .
-sudo docker run -it --rm --name running-app golang-app
+./build-and-run.sh
+```
+
+Delete container:
+```sh
+./delete-container.sh
 ```
 
 Code inside container:
