@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
 const (
@@ -55,7 +56,6 @@ func validBoardUnit(text rune) bool {
 // returns the value at the location
 func getValueAtRowColumn(text string, row, column int) rune {
 	var location = columnNum*(row-1) + (column - 1)
-
 	return []rune(text[location : location+1])[0]
 }
 
@@ -68,6 +68,22 @@ func findFirstEmpty(text string) int {
 		}
 	}
 	return -1
+}
+
+// take location of string and convert into board row and column
+func convertLinearLocationToRowColumn(location int) (row, column int) {
+	for row = 0; location >= 9; row++ {
+		location -= 9
+	}
+
+	column = location
+
+	return row + 1, column + 1
+}
+
+func setCellValue(board string, value rune, row, column int) string {
+	location := ((row - 1) * columnNum) + (column - 1)
+	return board[:location] + string(value) + board[location+1:]
 }
 
 // safeInColumn determines if the value is safe to be placed in the column
@@ -141,8 +157,36 @@ func valueSafe(text string, value rune, row, column int) (status bool) {
 }
 
 // solves the sudoku puzzle
-func solvePuzzle(text string) string {
-	return text
+func solvePuzzle(board string) (bool, string) {
+	if !validBoardLength(board) {
+		return false, board
+	}
+
+	emptyLocation := findFirstEmpty(board)
+
+	if emptyLocation == -1 {
+		return true, board
+	}
+
+	row, column := convertLinearLocationToRowColumn(emptyLocation)
+
+	for value := 1; value < 10; value++ {
+		valueRune := []rune(strconv.Itoa(value))[0]
+		if valueSafe(board, valueRune, row, column) {
+			//			fmt.Printf("%s\n", board)
+			board = setCellValue(board, valueRune, row, column)
+
+			status, board := solvePuzzle(board)
+
+			if status {
+				return true, board
+			}
+
+			board = setCellValue(board, '.', row, column)
+		}
+	}
+
+	return false, board
 }
 
 // userInput takes a text and checks if the text is valid
