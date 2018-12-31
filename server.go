@@ -16,6 +16,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if validBoardLength(board) {
 		status = "success"
 		printTable(w, board)
+		fmt.Fprintln(w, findFirstEmpty(board))
 	}
 
 	json.NewEncoder(w).Encode(map[string]string{"status": status, "board": board})

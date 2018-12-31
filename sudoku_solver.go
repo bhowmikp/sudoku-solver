@@ -37,49 +37,101 @@ func printTable(w io.Writer, text string) {
 	}
 }
 
+// return if a character is a board valid character or not
+func validBoardUnit(text rune) bool{
+	validCharacters := map[rune]bool{'1': true, '2': true, '3': true, '4': true,
+		                       '5': true, '6': true, '7': true, '8': true,
+													 '9': true}
+
+	return validCharacters[text]
+}
+
 // convertCoorToArrLocation takes in board as string, boards row and column and
 // returns the value at the location
-func getValueAtRowColumn(text string, row, column int) (value string) {
-	return value
+func getValueAtRowColumn(text string, row, column int) string {
+	var location = columnNum * (row - 1) + (column - 1)
+
+	return text[location:location+1]
 }
 
 // findFirstEmpty finds the first location in the puzzle that is empty
 // and returns the location inside the array
 func findFirstEmpty(text string) int {
-	numbers := map[rune]bool{'0': true, '1': true, '2': true, '3': true,
-													 '4': true, '5': true, '6': true, '7': true,
-													 '8': true, '9': true}
-
 	for i, letter := range text {
-		if numbers[letter] == false {
+		if validBoardUnit(letter) == false {
 			return i
 		}
 	}
 	return -1
 }
 
-// safeInColumn determines if a certain value is the only one of its
-// kind inside the column
-func safeInColumn(board, value string, column int) (status bool) {
-	return status
+// safeInColumn determines if the value is safe to be placed in the column
+func safeInColumn(board string, value rune, column int) bool {
+	found := make(map[rune]bool)
+	found[value] = true
+
+	for row := 1; row <= rowNum; row++ {
+		var valueAtLocation = []rune(getValueAtRowColumn(board, row, column))
+
+		if validBoardUnit(valueAtLocation[0]){
+			if found[valueAtLocation[0]] {
+				return false
+			}
+			found[valueAtLocation[0]] = true
+		}
+	}
+
+	return true
 }
 
-// safeInRow determines if a certain value is the only one of its
-// kind inside the row
-func safeInRow(board, value string, row int) (status bool) {
-	return status
+// safeInRow determines if the value is safe to be placed in the row
+func safeInRow(board string, value rune, row int) bool {
+	found := make(map[rune]bool)
+	found[value] = true
+
+	for column := 1; column <= columnNum; column++ {
+		var valueAtLocation = []rune(getValueAtRowColumn(board, row, column))
+
+		if validBoardUnit(valueAtLocation[0]) {
+			if found[valueAtLocation[0]] {
+				return false
+			}
+			found[valueAtLocation[0]] = true
+		}
+	}
+
+	return true
 }
 
-// safeInBlock determines if a certain value is the only one of its
-// kind in its 3x3 block
-func safeInBlock(board, value string, row, column int) (status bool) {
-	return status
+// safeInBlock determines if there are duplicates of valid characters in
+// 3x3 block
+func safeInBlock(board string, value rune, row, column int) bool {
+	found := make(map[rune]bool)
+	found[value] = true
+
+	row = (row - 1) - ((row - 1) % 3) + 1
+	column = (column - 1) - ((column - 1) % 3) + 1
+
+	for blockRow := 1; blockRow <= rowNum / 3; blockRow++ {
+		for blockColumn := 1; blockColumn <= columnNum / 3; blockColumn++ {
+			var valueAtLocation = []rune(getValueAtRowColumn(board, row, column))
+
+			if validBoardUnit(valueAtLocation[0]) {
+				if found[valueAtLocation[0]] {
+					return false
+				}
+				found[valueAtLocation[0]] = true
+			}
+		}
+	}
+
+	return true
 }
 
 // valueSafe determines if the value is safe to be placed in that
 // location of the puzzle
-func valueSafe(text, value string, row, column int) (status bool) {
-	return status
+func valueSafe(text string, value rune, row, column int) (status bool) {
+	return safeInColumn(text, value, column) && safeInRow(text, value, row) && safeInBlock(text, value, row, column)
 }
 
 // solves the sudoku puzzle
