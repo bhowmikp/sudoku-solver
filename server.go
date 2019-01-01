@@ -11,15 +11,20 @@ import (
 // Ex: http://localhost:8000/?board=test
 func handler(w http.ResponseWriter, r *http.Request) {
 	board := r.URL.Query().Get("board")
-	status := "fail"
 
-	if validBoardLength(board) {
-		status = "success"
-		printTable(w, board)
-		fmt.Fprintln(w, findFirstEmpty(board))
+	printTable(w, board)
+	statusBool, board := solvePuzzle(board)
+	fmt.Fprintln(w, "")
+	printTable(w, board)
+
+	var statusString string
+	if statusBool {
+		statusString = "success"
+	} else {
+		statusString = "fail"
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"status": status, "board": board})
+	json.NewEncoder(w).Encode(map[string]string{"status": statusString, "board": board})
 }
 
 func main() {

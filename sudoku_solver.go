@@ -21,24 +21,24 @@ const (
 // printTable takes in a string and prints a sudoku table
 // to print to stdout pass os.Stdout
 func printTable(w io.Writer, text string) {
-	for row := 0; row < rowNum; row++ {
-		rowBlock := text[rowNum*row : rowNum*(row+1)]
+	for row := 1; row <= rowNum; row++ {
+		for column := 1; column <= columnNum; column++ {
+			fmt.Fprintf(w, "%s", string(getValueAtRowColumn(text, row, column)))
 
-		for block := 0; block < blockNum; block++ {
-			if block < blockNum-1 {
-				fmt.Fprint(w, rowBlock[blockNum*(block):blockNum*(block+1)]+"|")
-			} else {
-				fmt.Fprintln(w, rowBlock[blockNum*(block):blockNum*(block+1)])
+			if column == columnNum {
+				fmt.Fprint(w, "\n")
+			} else if (column % 3) == 0 {
+				fmt.Fprintf(w, "|")
 			}
 		}
 
-		if (row > 0 && row < rowNum-1) && ((row+1)%3 == 0) {
+		if row != rowNum && row%3 == 0 {
 			fmt.Fprintln(w, "-----------")
 		}
 	}
 }
 
-// check if a board is valid length
+// check if a board is valid length of 81
 func validBoardLength(text string) bool {
 	return len(text) == sudokuSpots
 }
@@ -53,14 +53,14 @@ func validBoardUnit(text rune) bool {
 }
 
 // convertCoorToArrLocation takes in board as string, boards row and column and
-// returns the value at the location
+// returns the value at the location. Row and column value is 1 to 9
 func getValueAtRowColumn(text string, row, column int) rune {
 	var location = columnNum*(row-1) + (column - 1)
-	return []rune(text[location : location+1])[0]
+	return []rune(text)[location]
 }
 
 // findFirstEmpty finds the first location in the puzzle that is empty
-// and returns the location inside the array
+// and returns the location inside the array. If empty return -1
 func findFirstEmpty(text string) int {
 	for i, letter := range text {
 		if validBoardUnit(letter) == false {
@@ -70,7 +70,8 @@ func findFirstEmpty(text string) int {
 	return -1
 }
 
-// take location of string and convert into board row and column
+// take location of string and convert into board row and column.
+// Row and column value 1 to 9
 func convertLinearLocationToRowColumn(location int) (row, column int) {
 	for row = 0; location >= 9; row++ {
 		location -= 9
@@ -81,12 +82,14 @@ func convertLinearLocationToRowColumn(location int) (row, column int) {
 	return row + 1, column + 1
 }
 
+// set the value of a cell on the board. Value of row and column 1 to 9
 func setCellValue(board string, value rune, row, column int) string {
 	location := ((row - 1) * columnNum) + (column - 1)
 	return board[:location] + string(value) + board[location+1:]
 }
 
 // safeInColumn determines if the value is safe to be placed in the column
+// column value 1 to 9
 func safeInColumn(board string, value rune, column int) bool {
 	found := make(map[rune]bool)
 	found[value] = true
@@ -106,6 +109,7 @@ func safeInColumn(board string, value rune, column int) bool {
 }
 
 // safeInRow determines if the value is safe to be placed in the row
+// row value 1 to 9
 func safeInRow(board string, value rune, row int) bool {
 	found := make(map[rune]bool)
 	found[value] = true
@@ -125,7 +129,7 @@ func safeInRow(board string, value rune, row int) bool {
 }
 
 // safeInBlock determines if there are duplicates of valid characters in
-// 3x3 block
+// 3x3 block. Row and column value 1 to 9
 func safeInBlock(board string, value rune, row, column int) bool {
 	found := make(map[rune]bool)
 	found[value] = true
@@ -150,7 +154,7 @@ func safeInBlock(board string, value rune, row, column int) bool {
 }
 
 // valueSafe determines if the value is safe to be placed in that
-// location of the puzzle
+// location of the puzzle. Row and column value 1 to 9
 func valueSafe(text string, value rune, row, column int) (status bool) {
 	return safeInColumn(text, value, column) && safeInRow(text, value, row) &&
 		safeInBlock(text, value, row, column)
