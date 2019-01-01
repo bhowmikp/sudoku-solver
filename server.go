@@ -12,10 +12,7 @@ import (
 func handler(w http.ResponseWriter, r *http.Request) {
 	board := r.URL.Query().Get("board")
 
-	printTable(w, board)
 	statusBool, board := solvePuzzle(board)
-	fmt.Fprintln(w, "")
-	printTable(w, board)
 
 	var statusString string
 	if statusBool {
@@ -24,7 +21,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		statusString = "fail"
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"status": statusString, "board": board})
+	if board == "" {
+		fmt.Fprintf(w, "Example valid link /?board=..529.6......753.99...3...8.896.......79.28.......7.9.6...4...5..472......1.692..")
+	} else {
+		json.NewEncoder(w).Encode(map[string]string{"status": statusString, "board": board})
+	}
 }
 
 func main() {
