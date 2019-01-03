@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bhowmikp/sudoku-solver.svg?branch=master)](https://travis-ci.org/bhowmikp/sudoku-solver)
+[![Build Status](https://travis-ci.org/bhowmikp/sudoku-solver-server.svg?branch=master)](https://travis-ci.org/bhowmikp/sudoku-solver-server)
 
 # [Sudoku Solver Server](https://dry-hollows-45767.herokuapp.com/)
 Solves sudoku puzzles. This code is written for the server.
