@@ -1,7 +1,6 @@
 FROM golang:1.11
 
-RUN apt-get update \
-    && apt-get install nano
+RUN apt-get update
 
 ENV PORT=8000
 
